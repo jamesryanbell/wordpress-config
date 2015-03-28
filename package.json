@@ -1,0 +1,32 @@
+{
+  "name": "wordpress-config",
+  "version": "0.1.0",
+  "description": "",
+  "license": "MIT",
+  "repository": "jamesryanbell/wordpress-config",
+  "author": {
+    "name": "James Bell",
+    "email": "james@james-bell.co.uk",
+    "url": "https://james-bell.co.uk"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": ""
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "wordpress", "config", "wp-config"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "del": "^1.1.1",
+    "mkdirp": "^0.5.0",
+    "prompt": "^0.2.14",
+    "request": "^2.54.0",
+    "swig": "^1.4.2"
+  }
+}

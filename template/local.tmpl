@@ -1,0 +1,50 @@
+<?php
+
+// ** MySQL settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define('DB_NAME', '{{ database }}');
+
+/** MySQL database username */
+define('DB_USER', '{{ username }}');
+
+/** MySQL database password */
+define('DB_PASSWORD', '{{ password }}');
+
+/** MySQL hostname */
+define('DB_HOST', '{{ hostname }}');
+
+/**
+ * WordPress Database Table prefix.
+ *
+ * You can have multiple installations in one database if you give each a unique
+ * prefix. Only numbers, letters, and underscores please!
+ */
+$table_prefix  = '{{ prefix }}';
+
+/**
+ * For developers: WordPress debugging mode.
+ *
+ * Change this to true to enable the display of notices during development.
+ * It is strongly recommended that plugin and theme developers use WP_DEBUG
+ * in their development environments.
+ */
+define('WP_DEBUG', true);
+
+if( $_SERVER['HTTP_HOST'] == '{{ domain }}' ) {
+	define('WP_HOME','{{ url }}');
+	define('WP_SITEURL','{{ url }}');
+} else {
+	define('WP_HOME','{{ development_url }}');
+	define('WP_SITEURL','{{ development_url }}');
+}
+
+/**#@+
+ * Authentication Unique Keys and Salts.
+ *
+ * Change these to different unique phrases!
+ * You can generate these using the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}
+ * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
+ *
+ * @since 2.6.0
+ */
+{{ salts|safe }}
