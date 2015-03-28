@@ -18,14 +18,14 @@
 $hostname = $_SERVER['HTTP_HOST'];
 
 switch ($hostname) {
-	case 'a':
-	case 'a':
+	case 'local.bloomagency.co.uk':
+	case 'bloomagency.developing.bloommedia.co.uk':
 		define('WP_ENV', 'development');
 		break;
-	case 'a':
+	case 'bloomagency.staging.bloommedia.co.uk':
 		define('WP_ENV', 'staging');
 		break;
-	case 'a':
+	case 'bloomagency.co.uk':
 	default:
 		define('WP_ENV', 'production');
 }

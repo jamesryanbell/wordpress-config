@@ -1,1 +1,4 @@
 node_modules
+output
+.DS_STORE
+npm-debug.log

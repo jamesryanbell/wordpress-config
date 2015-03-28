@@ -31,7 +31,7 @@ function getSalts(config) {
 				}
 			});
 		}
-	})
+	});
 }
 
 function buildConfig(config) {
@@ -90,56 +90,37 @@ function getSettings() {
 	//
 	// Get two properties from the user: username and email
 	//
-	console.log('======================================');
-	console.log('Local');
-	console.log('======================================');
-	prompt.get([{name: 'local', required: true, description: 'Local URL' }, {name: 'development', required: true, description: 'Development URL' }], function (err, result) {
+	prompt.get([{name: 'projectname', required: true, description: 'Project name e.g. bloomagency' }], function (err, result) {
 		//
 		// Log the results.
 		//
+
+		var projectname = result.projectname;
+
 		console.log('======================================');
-		console.log('Database connection');
+		console.log('Local');
 		console.log('======================================');
-		prompt.get([{name: 'hostname', description: 'Hostname'}, {name: 'username', description: 'Username'}, {name: 'password', description: 'Password'}, {name: 'database', description: 'Database name'}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}], function(err, results) {
+		prompt.get([{name: 'url', default: 'http://local.' + projectname + '.co.uk', required: true, description: 'Local URL' }, {name: 'hostname', default: 'vs-dev-1', description: 'Hostname'}, {name: 'username', description: 'Username'}, {name: 'password', description: 'Password'}, {name: 'database', description: 'Database name'}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}, {name: 'development', default: 'http://' + projectname + '.developing.bloommedia.co.uk', required: true, description: 'Development URL' }], function(err, results) {
 			var local = results;
-			local.url = result.local;
 			local.domain = local.url.replace(/^https?:\/\//, '');
-			local.development_url = result.development;
+			local.development_url = results.development;
 			local.development_domain = local.development_url.replace(/^https?:\/\//, '');
 
 			console.log('======================================');
 			console.log('Staging');
 			console.log('======================================');
-			prompt.get([{name: 'staging', required: true, description: 'Staging URL' }], function (err, result) {
-				//
-				// Log the results.
-				//
-				console.log('======================================');
-				console.log('Database connection');
-				console.log('======================================');
-				prompt.get([{name: 'hostname', description: 'Hostname'}, {name: 'username', description: 'Username'}, {name: 'password', description: 'Password'}, {name: 'database', description: 'Database name'}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}], function(err, results) {
-					var staging = results;
-					staging.url = result.staging;
-					staging.domain = staging.url.replace(/^https?:\/\//, '');
+			prompt.get([{name: 'url', required: true, default: 'http://' + projectname + '.staging.bloommedia.co.uk', description: 'Staging URL' }, {name: 'hostname', default: 'vs-dev-2', description: 'Hostname'}, {name: 'username', description: 'Username'}, {name: 'password', description: 'Password'}, {name: 'database', description: 'Database name'}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}], function(err, results) {
+				var staging = results;
+				staging.domain = staging.url.replace(/^https?:\/\//, '');
 
-					console.log('======================================');
-					console.log('Live');
-					console.log('======================================');
-					prompt.get([{name: 'live', required: true, description: 'Live URL' }], function (err, result) {
-						//
-						// Log the results.
-						//
-						console.log('======================================');
-						console.log('Database connection');
-						console.log('======================================');
-						prompt.get([{name: 'hostname', description: 'Hostname'}, {name: 'username', description: 'Username'}, {name: 'password', description: 'Password'}, {name: 'database', description: 'Database name'}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}], function(err, results) {
-							var live = results;
-							live.url = result.live;
-							live.domain = live.url.replace(/^https?:\/\//, '');
+				console.log('======================================');
+				console.log('Live');
+				console.log('======================================');
+				prompt.get([{name: 'url', required: true, default: 'http://' + projectname + '.co.uk', description: 'Live URL' }, {name: 'hostname', default: 'localhost', description: 'Hostname'}, {name: 'username', description: 'Username'}, {name: 'password', description: 'Password'}, {name: 'database', description: 'Database name'}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}], function(err, results) {
+					var live = results;
+					live.domain = live.url.replace(/^https?:\/\//, '');
 
-							getSalts({'local': local, 'staging': staging, 'live': live});
-						});
-					});
+					getSalts({'local': local, 'staging': staging, 'live': live});
 				});
 			});
 		});
