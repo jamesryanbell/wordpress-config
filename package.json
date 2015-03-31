@@ -19,14 +19,18 @@
     "index.js"
   ],
   "keywords": [
-    "wordpress", "config", "wp-config"
+    "wordpress",
+    "config",
+    "wp-config"
   ],
   "dependencies": {},
   "devDependencies": {
+    "async": "^0.9.0",
     "del": "^1.1.1",
     "mkdirp": "^0.5.0",
     "prompt": "^0.2.14",
     "request": "^2.54.0",
+    "request-promise": "^0.4.1",
     "swig": "^1.4.2"
   }
 }
