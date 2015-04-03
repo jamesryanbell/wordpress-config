@@ -1,4 +1,4 @@
-# <%= moduleName %> [![Build Status](https://travis-ci.org/<%= githubUsername %>/<%= moduleName %>.svg?branch=master)](https://travis-ci.org/<%= githubUsername %>/<%= moduleName %>)
+# wordpress-config [![Build Status](https://travis-ci.org/jamesryanbell/wordpress-config.svg?branch=master)](https://travis-ci.org/jamesryanbell/wordpress-config)
 
 >
 
@@ -6,41 +6,10 @@
 ## Install
 
 ```
-$ npm install --save <%= moduleName %>
+$ npm install --save wordpress-config
 ```
-
-
-## Usage
-
-```js
-var <%= camelModuleName %> = require('<%= moduleName %>');
-
-<%= camelModuleName %>('unicorns');
-//=> unicorns & rainbows
-```
-
-
-## API
-
-### <%= camelModuleName %>(input, [options])
-
-#### input
-
-*Required*  
-Type: `string`
-
-Lorem ipsum.
-
-#### options
-
-##### foo
-
-Type: `boolean`  
-Default: `false`
-
-Lorem ipsum.
 
 
 ## License
 
-MIT © [<%= name %>](https://github.com/<%= githubUsername %>)
+MIT © [James Bell](https://github.com/jamesryanbell)
