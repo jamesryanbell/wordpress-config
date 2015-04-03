@@ -26,6 +26,7 @@
   "dependencies": {},
   "devDependencies": {
     "async": "^0.9.0",
+    "chalk": "^1.0.0",
     "del": "^1.1.1",
     "mkdirp": "^0.5.0",
     "prompt": "^0.2.14",
