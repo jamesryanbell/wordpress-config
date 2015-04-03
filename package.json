@@ -19,7 +19,8 @@
     "wordpress-config": "index.js"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "template"
   ],
   "keywords": [
     "wordpress",

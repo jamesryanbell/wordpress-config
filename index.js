@@ -4,11 +4,10 @@
 
 var chalk  = require('chalk');
 var path = require('path');
-var appDir = path.dirname(require.main.filename);
 
 function saveFile(filename, content, cb) {
 	var fs = require('fs');
-	fs.writeFile(path.join(appDir, filename), content, function(err) {
+	fs.writeFile(filename, content, function(err) {
 		if(err) {
 			return console.log(err);
 		}
@@ -112,18 +111,20 @@ function buildConfig(config) {
 	console.log(chalk.cyan('Creating config files'));
 	console.log(chalk.cyan('======================================'));
 
-	var tpl = swig.compileFile('./template/config.tmpl');
+	var appDir = path.dirname(require.main.filename);
+	var templateDir = path.join(appDir, 'template');
+
+	var tpl = swig.compileFile(path.join(templateDir, 'config.tmpl'));
 	var config_template = tpl(config);
 
-	tpl = swig.compileFile('./template/local.tmpl');
+	tpl = swig.compileFile(path.join(templateDir, 'local.tmpl'));
 	var local_template = tpl(config.local);
 
-	tpl = swig.compileFile('./template/staging.tmpl');
+	tpl = swig.compileFile(path.join(templateDir, 'staging.tmpl'));
 	var staging_template = tpl(config.staging);
 
-	tpl = swig.compileFile('./template/live.tmpl');
+	tpl = swig.compileFile(path.join(templateDir, 'live.tmpl'));
 	var live_template = tpl(config.live);
-
 
 	var fileCount = 0;
 	function allDone(fileCount) {
