@@ -3,10 +3,12 @@
 'use strict';
 
 var chalk  = require('chalk');
+var path = require('path');
+var appDir = path.dirname(require.main.filename);
 
 function saveFile(filename, content, cb) {
 	var fs = require('fs');
-	fs.writeFile(filename, content, function(err) {
+	fs.writeFile(path.join(appDir, filename), content, function(err) {
 		if(err) {
 			return console.log(err);
 		}
