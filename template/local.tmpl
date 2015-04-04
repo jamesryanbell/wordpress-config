@@ -32,10 +32,10 @@ define('WP_DEBUG', true);
 
 if( $_SERVER['HTTP_HOST'] == '{{ domain }}' ) {
 	define('WP_HOME','{{ url }}');
-	define('WP_SITEURL','{{ url }}');
+	define('WP_SITEURL', WP_HOME);
 } else {
 	define('WP_HOME','{{ development_url }}');
-	define('WP_SITEURL','{{ development_url }}');
+	define('WP_SITEURL', WP_HOME);
 }
 
 /**#@+

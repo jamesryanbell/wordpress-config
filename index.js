@@ -18,9 +18,9 @@ function saveFile(filename, content, cb) {
 function getSalts(config) {
 	var request = require('request');
 
-	console.log(chalk.cyan('======================================'));
-	console.log(chalk.cyan('Retrieving salts'));
-	console.log(chalk.cyan('======================================'));
+	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('            Retrieving salts'));
+	console.log(chalk.cyan('========================================'));
 
 	request('https://api.wordpress.org/secret-key/1.1/salt/', function (error, response, body) {
 		if (!error && response.statusCode == 200) {
@@ -43,9 +43,9 @@ function getSalts(config) {
 function getUsernamesAndPasswords(projectname, cb) {
 	var async = require('async');
 
-	console.log(chalk.cyan('======================================'));
-	console.log(chalk.cyan('Generating usernames and passwords'));
-	console.log(chalk.cyan('======================================'));
+	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('   Generating usernames and passwords'));
+	console.log(chalk.cyan('========================================'));
 
 	async.parallel([
 		function(callback) {
@@ -107,9 +107,9 @@ function buildConfig(config) {
 	var fs     = require('fs');
 	var del    = require('del');
 
-	console.log(chalk.cyan('======================================'));
-	console.log(chalk.cyan('Creating config files'));
-	console.log(chalk.cyan('======================================'));
+	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('          Creating config files'));
+	console.log(chalk.cyan('========================================'));
 
 	var appDir = path.dirname(require.main.filename);
 	var templateDir = path.join(appDir, 'template');
@@ -129,9 +129,9 @@ function buildConfig(config) {
 	var fileCount = 0;
 	function allDone(fileCount) {
 		if(fileCount === 2) {
-			console.log(chalk.cyan('======================================'));
-			console.log(chalk.cyan('All done!'));
-			console.log(chalk.cyan('======================================'));
+			console.log(chalk.cyan('========================================'));
+			console.log(chalk.cyan('                All done!'));
+			console.log(chalk.cyan('========================================'));
 		}
 	};
 
@@ -156,102 +156,229 @@ function buildConfig(config) {
 
 function getSettings() {
 
-	var prompt = require('prompt');
+	var inquirer = require("inquirer");
+	var slug     = require('slug');
 
 	var wp = [
 			'',
-			chalk.bold.yellow('          Wordpress Config Generator'),
+			chalk.bold.yellow('     Wordpress Config Generator'),
 			'',
-			chalk.grey('                 ..::::::::::::..'),
-			chalk.grey('             .:::   ')  + chalk.cyan('::::::::::')                          + chalk.grey('   ::..'),
-			chalk.grey('           .:    ')     + chalk.cyan(':::::::::::::::')                     + chalk.grey('    :..'),
-			chalk.grey('         .:   ')        + chalk.cyan(':::::::::::::::::::::')               + chalk.grey('   :.'),
-			chalk.grey('        .:  ')          + chalk.cyan('::::::::::::::::::::::')              + chalk.grey('     :..'),
-			chalk.grey('       .:  ')           + chalk.cyan('::::::::::::::::::::::')              + chalk.grey('       ::.'),
-			chalk.grey('      .:         ')     + chalk.cyan(':::          :::')                    + chalk.grey('        :..'),
-			chalk.grey('     .:       ')        + chalk.cyan('::::::::     :::::::')                + chalk.grey('        :.'),
-			chalk.grey('     :  ')              + chalk.cyan(':      :::::::      :::::::     :')   + chalk.grey('  :.'),
-			chalk.grey('    .:  ')              + chalk.cyan('::     ::::::::     :::::::    ::')   + chalk.grey('  :.'),
-			chalk.grey('    :: ')               + chalk.cyan('::::     :::::::      :::::::   :::') + chalk.grey(' ::'),
-			chalk.grey('    :: ')               + chalk.cyan('::::     ::::::::     :::::::   :::') + chalk.grey(' ::'),
-			chalk.grey('    :: ')               + chalk.cyan(':::::     :::::::      ::::::  ::::') + chalk.grey(' ::'),
-			chalk.grey('    :: ')               + chalk.cyan(':::::     ::::::       ::::::  ::::') + chalk.grey(' :.'),
-			chalk.grey('    .:  ')              + chalk.cyan(':::::     :::::  ::    ::::  ::::')   + chalk.grey('  :.'),
-			chalk.grey('     :  ')              + chalk.cyan('::::::     :::   ::    ::::  ::::')   + chalk.grey('  :.'),
-			chalk.grey('     .:  ')             + chalk.cyan(':::::     ::   :::     ::  ::::')     + chalk.grey('  :.'),
-			chalk.grey('      .:  ')            + chalk.cyan(':::::        :::::    ::  :::')       + chalk.grey('  ::.'),
-			chalk.grey('      .::  ')           + chalk.cyan('::::       ::::::       :::')         + chalk.grey('  ::.'),
-			chalk.grey('        .:  ')          + chalk.cyan('::::     ::::::::     :::')           + chalk.grey('  ::.'),
-			chalk.grey('         .:   ')        + chalk.cyan('::    :::::::::    ::')               + chalk.grey('   :.'),
-			chalk.grey('          .::      ')   + chalk.cyan('::::::::::')                          + chalk.grey('      ::.'),
-			chalk.grey('            ..::    ') + chalk.cyan('::::::::')                             + chalk.grey('    ::..'),
-			chalk.grey('               ..:::..     ..:::..'),
-			chalk.grey('                    ..:::::.. '),
+			chalk.grey('             ..::::::::::::..'),
+			chalk.grey('         .:::   ')  + chalk.cyan('::::::::::')                          + chalk.grey('   ::..'),
+			chalk.grey('       .:    ')     + chalk.cyan(':::::::::::::::')                     + chalk.grey('    :..'),
+			chalk.grey('     .:   ')        + chalk.cyan(':::::::::::::::::::::')               + chalk.grey('   :.'),
+			chalk.grey('    .:  ')          + chalk.cyan('::::::::::::::::::::::')              + chalk.grey('     :..'),
+			chalk.grey('   .:  ')           + chalk.cyan('::::::::::::::::::::::')              + chalk.grey('       ::.'),
+			chalk.grey('  .:         ')     + chalk.cyan(':::          :::')                    + chalk.grey('        :..'),
+			chalk.grey(' .:       ')        + chalk.cyan('::::::::     :::::::')                + chalk.grey('        :.'),
+			chalk.grey(' :  ')              + chalk.cyan(':      :::::::      :::::::     :')   + chalk.grey('  :.'),
+			chalk.grey('.:  ')              + chalk.cyan('::     ::::::::     :::::::    ::')   + chalk.grey('  :.'),
+			chalk.grey(':: ')               + chalk.cyan('::::     :::::::      :::::::   :::') + chalk.grey(' ::'),
+			chalk.grey(':: ')               + chalk.cyan('::::     ::::::::     :::::::   :::') + chalk.grey(' ::'),
+			chalk.grey(':: ')               + chalk.cyan(':::::     :::::::      ::::::  ::::') + chalk.grey(' ::'),
+			chalk.grey(':: ')               + chalk.cyan(':::::     ::::::       ::::::  ::::') + chalk.grey(' :.'),
+			chalk.grey('.:  ')              + chalk.cyan(':::::     :::::  ::    ::::  ::::')   + chalk.grey('  :.'),
+			chalk.grey(' :  ')              + chalk.cyan('::::::     :::   ::    ::::  ::::')   + chalk.grey('  :.'),
+			chalk.grey(' .:  ')             + chalk.cyan(':::::     ::   :::     ::  ::::')     + chalk.grey('  :.'),
+			chalk.grey('  .:  ')            + chalk.cyan(':::::        :::::    ::  :::')       + chalk.grey('  ::.'),
+			chalk.grey('  .::  ')           + chalk.cyan('::::       ::::::       :::')         + chalk.grey('  ::.'),
+			chalk.grey('    .:  ')          + chalk.cyan('::::     ::::::::     :::')           + chalk.grey('  ::.'),
+			chalk.grey('     .:   ')        + chalk.cyan('::    :::::::::    ::')               + chalk.grey('   :.'),
+			chalk.grey('      .::      ')   + chalk.cyan('::::::::::')                          + chalk.grey('      ::.'),
+			chalk.grey('        ..::    ') + chalk.cyan('::::::::')                             + chalk.grey('    ::..'),
+			chalk.grey('           ..:::..     ..:::..'),
+			chalk.grey('                ..:::::.. '),
 			''
 		].join('\n');
 
 	console.log(wp);
 
-	console.log(chalk.cyan('======================================'));
-	console.log(chalk.cyan('Configuration setup wizard'));
-	console.log(chalk.cyan('======================================'));
+	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('       Configuration setup wizard'));
+	console.log(chalk.cyan('========================================'));
 
-	prompt.message = '';
-	prompt.delimiter = '';
+	var start = [{
+		type: "input",
+		name: "projectname",
+		message: "Project name e.g. bloomagency",
+		validate: function (val) {
+			return val.length > 0 ? true : 'You have to provide a project name';
+		},
+		filter: function (val) {
+			return slug(val).toLowerCase();
+		}
+	}];
 
-	//
-	// Start the prompt
-	//
-	prompt.start();
+	inquirer.prompt(start, function(answers) {
+		var projectname = answers.projectname;
 
-	//
-	// Get two properties from the user: username and email
-	//
-	prompt.get([{name: 'projectname', required: true, description: 'Project name e.g. bloomagency' }], function (err, result) {
-		//
-		// Log the results.
-		//
+		getUsernamesAndPasswords(projectname, function(usernames_and_passwords) {
 
-		if(result && result.projectname) {
-			var projectname = result.projectname;
+			console.log(chalk.cyan('========================================'));
+			console.log(chalk.cyan('                 Local'));
+			console.log(chalk.cyan('========================================'));
 
-			getUsernamesAndPasswords(projectname, function(config) {
+			var dev = [
+				{
+					type: "input",
+					name: 'url',
+					default: 'http://local.' + projectname + '.co.uk',
+					validate: function (val) {
+						return val.length > 0 ? true : 'You have to provide a local URL';
+					},
+					message: 'Local URL'
+				},
+				{
+					type: "input",
+					name: 'hostname',
+					default: 'vs-dev-1',
+					message: 'Hostname'
+				},
+				{
+					type: "input",
+					name: 'username',
+					default: usernames_and_passwords.usernames[0],
+					message: 'Username'
+				},
+				{
+					type: "input",
+					name: 'password',
+					default: usernames_and_passwords.passwords[0],
+					message: 'Password'
+				},
+				{
+					type: "input",
+					name: 'database',
+					message: 'Database name',
+					default: answers.projectname
+				},
+				{
+					type: "input",
+					name: 'prefix',
+					default: 'wp_',
+					message: 'Table prefix'
+				},
+				{
+					type: "input",
+					name: 'development',
+					default: 'http://' + projectname + '.developing.bloommedia.co.uk',
+					validate: function (val) {
+						return val.length > 0 ? true : 'You have to provide a developing URL';
+					},
+					message: 'Development URL'
+				}
+			];
+			inquirer.prompt(dev, function( answers ) {
 
-				console.log(chalk.cyan('======================================'));
-				console.log(chalk.cyan('Local'));
-				console.log(chalk.cyan('======================================'));
-				prompt.get([{name: 'url', default: 'http://local.' + projectname + '.co.uk', required: true, description: 'Local URL' }, {name: 'hostname', default: 'vs-dev-1', description: 'Hostname'}, {name: 'username', default: config.usernames[0], description: 'Username'}, {name: 'password', default: config.passwords[0], description: 'Password'}, {name: 'database', description: 'Database name', default: config.projectname}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}, {name: 'development', default: 'http://' + projectname + '.developing.bloommedia.co.uk', required: true, description: 'Development URL' }], function(err, results) {
-					if(results && results.url) {
-						var local = results;
-						local.domain = local.url.replace(/^https?:\/\//, '');
-						local.development_url = results.development;
-						local.development_domain = local.development_url.replace(/^https?:\/\//, '');
+				var local = answers;
+				local.domain = local.url.replace(/^https?:\/\//, '');
+				local.development_url = answers.development;
+				local.development_domain = local.development_url.replace(/^https?:\/\//, '');
 
-						console.log(chalk.cyan('======================================'));
-						console.log(chalk.cyan('Staging'));
-						console.log(chalk.cyan('======================================'));
-						prompt.get([{name: 'url', required: true, default: 'http://' + projectname + '.staging.bloommedia.co.uk', description: 'Staging URL' }, {name: 'hostname', default: 'vs-dev-2', description: 'Hostname'}, {name: 'username', default: config.usernames[1], description: 'Username'}, {name: 'password', default: config.passwords[1], description: 'Password'}, {name: 'database', description: 'Database name', default: config.projectname}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}], function(err, results) {
-							if(results && results.url) {
-								var staging = results;
-								staging.domain = staging.url.replace(/^https?:\/\//, '');
+				console.log(chalk.cyan('========================================'));
+				console.log(chalk.cyan('                Staging'));
+				console.log(chalk.cyan('========================================'));
 
-								console.log(chalk.cyan('======================================'));
-								console.log(chalk.cyan('Live'));
-								console.log(chalk.cyan('======================================'));
-								prompt.get([{name: 'url', required: true, default: 'http://' + projectname + '.co.uk', description: 'Live URL' }, {name: 'hostname', default: 'localhost', description: 'Hostname'}, {name: 'username', default: config.usernames[2], description: 'Username'}, {name: 'password', default: config.passwords[2], description: 'Password'}, {name: 'database', description: 'Database name', default: config.projectname}, {name: 'prefix', default: 'wp_', description: 'Table prefix'}], function(err, results) {
-									if(results && results.url) {
-										var live = results;
-										live.domain = live.url.replace(/^https?:\/\//, '');
-
-										getSalts({'local': local, 'staging': staging, 'live': live});
-									}
-								});
-							}
-						});
+				var staging = [
+					{
+						type: "input",
+						name: 'url',
+						default: 'http://' + projectname + '.staging.bloommedia.co.uk',
+						validate: function (val) {
+							return val.length > 0 ? true : 'You have to provide a staging URL';
+						},
+						message: 'Staging URL'
+					},
+					{
+						type: "input",
+						name: 'hostname',
+						default: 'vs-dev-2',
+						message: 'Hostname'
+					},
+					{
+						type: "input",
+						name: 'username',
+						default: usernames_and_passwords.usernames[1],
+						message: 'Username'
+					},
+					{
+						type: "input",
+						name: 'password',
+						default: usernames_and_passwords.passwords[1],
+						message: 'Password'
+					},
+					{
+						type: "input",
+						name: 'database',
+						message: 'Database name',
+						default: usernames_and_passwords.projectname
+					},
+					{
+						type: "input",
+						name: 'prefix',
+						default: 'wp_',
+						message: 'Table prefix'
 					}
+				];
+				inquirer.prompt(staging, function( answers ) {
+
+					var staging = answers;
+					staging.domain = staging.url.replace(/^https?:\/\//, '');
+
+					console.log(chalk.cyan('========================================'));
+					console.log(chalk.cyan('                  Live'));
+					console.log(chalk.cyan('========================================'));
+
+
+					var live = [
+						{
+							type: "input",
+							name: 'url',
+							default: 'http://www.' + projectname + '.co.uk',
+							validate: function (val) {
+								return val.length > 0 ? true : 'You have to provide a live URL';
+							},
+							message: 'Staging URL'
+						},
+						{
+							type: "input",
+							name: 'hostname',
+							default: 'localhost',
+							message: 'Hostname'
+						},
+						{
+							type: "input",
+							name: 'username',
+							default: usernames_and_passwords.usernames[1],
+							message: 'Username'
+						},
+						{
+							type: "input",
+							name: 'password',
+							default: usernames_and_passwords.passwords[1],
+							message: 'Password'
+						},
+						{
+							type: "input",
+							name: 'database',
+							message: 'Database name',
+							default: usernames_and_passwords.projectname
+						},
+						{
+							type: "input",
+							name: 'prefix',
+							default: 'wp_',
+							message: 'Table prefix'
+						}
+					];
+					inquirer.prompt(live, function( answers ) {
+						var live = answers;
+						live.domain = live.url.replace(/^https?:\/\//, '');
+						getSalts({'local': local, 'staging': staging, 'live': live});
+					});
 				});
 			});
-		}
+		});
 	});
 }
 
