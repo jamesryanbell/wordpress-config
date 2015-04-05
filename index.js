@@ -15,37 +15,47 @@ function saveFile(filename, content, cb) {
 	});
 }
 
+function getSalt(callback) {
+	var rp = require('request-promise');
+
+	rp('https://api.wordpress.org/secret-key/1.1/salt/')
+	.then(function (response) {
+		callback(null, response);
+	}, null);
+}
+
 function getSalts(config) {
-	var request = require('request');
+	var async = require('async');
 
-	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('---------------------------------------'));
 	console.log(chalk.cyan('            Retrieving salts'));
-	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('---------------------------------------'));
 
-	request('https://api.wordpress.org/secret-key/1.1/salt/', function (error, response, body) {
-		if (!error && response.statusCode == 200) {
-			config.local.salts = body;
-			request('https://api.wordpress.org/secret-key/1.1/salt/', function (error, response, body) {
-				if (!error && response.statusCode == 200) {
-					config.staging.salts = body;
-					request('https://api.wordpress.org/secret-key/1.1/salt/', function (error, response, body) {
-						if (!error && response.statusCode == 200) {
-							config.live.salts = body;
-							buildConfig(config);
-						}
-					});
-				}
-			});
+	async.parallel([
+		function(callback) {
+			getSalt(callback)
+		},
+		function(callback) {
+			getSalt(callback)
+		},
+		function(callback) {
+			getSalt(callback)
 		}
+	],
+	function(err, results) {
+		config.local.salts = results[0];
+		config.staging.salts = results[1];
+		config.live.salts = results[2];
+		buildConfig(config);
 	});
 }
 
 function getUsernamesAndPasswords(projectname, cb) {
 	var async = require('async');
 
-	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('---------------------------------------'));
 	console.log(chalk.cyan('   Generating usernames and passwords'));
-	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('---------------------------------------'));
 
 	async.parallel([
 		function(callback) {
@@ -107,9 +117,9 @@ function buildConfig(config) {
 	var fs     = require('fs');
 	var del    = require('del');
 
-	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('---------------------------------------'));
 	console.log(chalk.cyan('          Creating config files'));
-	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('---------------------------------------'));
 
 	var appDir = path.dirname(require.main.filename);
 	var templateDir = path.join(appDir, 'template');
@@ -129,9 +139,9 @@ function buildConfig(config) {
 	var fileCount = 0;
 	function allDone(fileCount) {
 		if(fileCount === 2) {
-			console.log(chalk.cyan('========================================'));
+			console.log(chalk.cyan('---------------------------------------'));
 			console.log(chalk.cyan('                All done!'));
-			console.log(chalk.cyan('========================================'));
+			console.log(chalk.cyan('---------------------------------------'));
 		}
 	};
 
@@ -193,9 +203,9 @@ function getSettings() {
 
 	console.log(wp);
 
-	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('---------------------------------------'));
 	console.log(chalk.cyan('       Configuration setup wizard'));
-	console.log(chalk.cyan('========================================'));
+	console.log(chalk.cyan('---------------------------------------'));
 
 	var start = [{
 		type: "input",
@@ -214,9 +224,9 @@ function getSettings() {
 
 		getUsernamesAndPasswords(projectname, function(usernames_and_passwords) {
 
-			console.log(chalk.cyan('========================================'));
+			console.log(chalk.cyan('---------------------------------------'));
 			console.log(chalk.cyan('                 Local'));
-			console.log(chalk.cyan('========================================'));
+			console.log(chalk.cyan('---------------------------------------'));
 
 			var dev = [
 				{
@@ -275,9 +285,9 @@ function getSettings() {
 				local.development_url = answers.development;
 				local.development_domain = local.development_url.replace(/^https?:\/\//, '');
 
-				console.log(chalk.cyan('========================================'));
+				console.log(chalk.cyan('---------------------------------------'));
 				console.log(chalk.cyan('                Staging'));
-				console.log(chalk.cyan('========================================'));
+				console.log(chalk.cyan('---------------------------------------'));
 
 				var staging = [
 					{
@@ -325,9 +335,9 @@ function getSettings() {
 					var staging = answers;
 					staging.domain = staging.url.replace(/^https?:\/\//, '');
 
-					console.log(chalk.cyan('========================================'));
+					console.log(chalk.cyan('---------------------------------------'));
 					console.log(chalk.cyan('                  Live'));
-					console.log(chalk.cyan('========================================'));
+					console.log(chalk.cyan('---------------------------------------'));
 
 
 					var live = [
