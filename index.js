@@ -133,7 +133,7 @@ function buildConfig(config) {
 	tpl = swig.compileFile(path.join(templateDir, 'staging.tmpl'));
 	var staging_template = tpl(config.staging);
 
-	tpl = swig.compileFile(path.join(templateDir, 'live.tmpl'));
+	tpl = swig.compileFile(path.join(templateDir, 'production.tmpl'));
 	var live_template = tpl(config.live);
 
 	var fileCount = 0;
@@ -156,7 +156,7 @@ function buildConfig(config) {
 					} else {
 						saveFile('./output/wp-config.development.php', local_template, function() { allDone(fileCount++) });
 						saveFile('./output/wp-config.staging.php', staging_template, function() { allDone(fileCount++) });
-						saveFile('./output/wp-config.live.php', live_template, function() { allDone(fileCount++) });
+						saveFile('./output/wp-config.production.php', live_template, function() { allDone(fileCount++) });
 					}
 				});
 			}
